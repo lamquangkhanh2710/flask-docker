@@ -4,6 +4,7 @@ pipeline {
 
   environment {
     DOCKER_IMAGE = "lamquangkhanh2710/flask-docker"
+    DOCKER_CONTAINER = "flask-docker"
   }
 
   stages {
@@ -36,9 +37,11 @@ pipeline {
             sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
             sh "docker push ${DOCKER_IMAGE}:latest"
         }
-        sh "docker run -dp 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+        sh "docker rm -f ${DOCKER_CONTAINER} || true"
+        sh "docker run -dp 5000:5000 --name ${DOCKER_CONTAINER}  ${DOCKER_IMAGE}:${DOCKER_TAG}"
+        
         //clean to save disk
-        sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
+        // sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
         sh "docker image rm ${DOCKER_IMAGE}:latest"
       }
     }
